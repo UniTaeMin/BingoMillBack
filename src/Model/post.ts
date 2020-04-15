@@ -16,12 +16,22 @@ const postSchema = new Schema({
     type: String,
     required: true
   },
+  words: {
+    type: Array,
+    required: true
+  },
+  wordSize: {
+    type: Number,
+    required: true
+  },
 })
 export interface PostDocument extends Document {
   title: string
   password: string
   time: string
   username: string
+  words: [string]
+  wordSize: number
 }
 const Post: Model<PostDocument> = model("post", postSchema)
 export default Post

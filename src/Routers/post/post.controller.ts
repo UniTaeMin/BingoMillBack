@@ -8,7 +8,7 @@ import * as jwt from "jsonwebtoken"
 require("dotenv").config()
 
 export const Create = async (req: Request, res: Response) => {
-  const { username, password, title } = req.body
+  const { wordSize, words, username, password, title } = req.body
   if (!username || !password || !title) {
     return Send(res, 200, "빈칸을 모두 입력해 주세요.", false)
   }
@@ -16,9 +16,11 @@ export const Create = async (req: Request, res: Response) => {
   bcrypt.hash(password, null, null, async function (err, hash) {
     const post: any = new Post({
       title: title,
-      time: moment().format("YYYY-MM-DD-HH-mm-ss"),
+      time: moment().format("YYYY-MM-DD"),
       username: username,
       password: hash,
+      words: words,
+      wordSize: wordSize,
     })
     await post
       .save()
@@ -37,7 +39,12 @@ export const Init = async (req: Request, res: Response) => {
 
 export const FindAll = async (req: Request, res: Response) => {
   Post.find({}, function (err, result) {
-    var r = result.reverse()
+    let r = [];
+    result.forEach((e) => {
+      let day = new Date(e.time)
+      let goDay = day.getFullYear() + '년 ' + (day.getMonth() + 1) + '월 ' + day.getDate() + '일 '
+      r.push({ title: e.title, time: goDay, username: e.username, words: e.words, wordSize: e.wordSize, _id: e._id })
+    })
     return Send(res, 200, "성공", true, r)
   })
 }
