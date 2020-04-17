@@ -50,7 +50,17 @@ export const FindAll = async (req: Request, res: Response) => {
 }
 export const FindOne = async (req: Request, res: Response) => {
   const { _id } = req.body
+  console.log(_id)
   Post.findOne({ _id: _id }, function (err, result) {
-    return Send(res, 200, "성공", true, result)
+    if (result) {
+      console.log(result)
+      let day = new Date(result.time)
+      let goDay = day.getFullYear() + '년 ' + (day.getMonth() + 1) + '월 ' + day.getDate() + '일 '
+      let r = [{ title: result.title, time: goDay, username: result.username, words: result.words, wordSize: result.wordSize, _id: result._id }];
+      return Send(res, 200, "성공", true, r)
+    } else {
+      return Send(res, 200, "실패", false, '실패')
+    }
+
   })
 }
