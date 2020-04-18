@@ -33,7 +33,7 @@ export const Create = async (req: Request, res: Response) => {
           .send({ state: true, result: "게시물을 정상적으로 작성하였습니다." })
           .end()
       })
-      .catch(err => Send(res, 200, "DB 저장을 실패했습니다.", false))
+      .catch(err => Send(res, 500, "DB 저장을 실패했습니다.", false))
   })
 }
 export const Init = async (req: Request, res: Response) => {
@@ -53,7 +53,6 @@ export const FindAll = async (req: Request, res: Response) => {
 }
 export const FindOne = async (req: Request, res: Response) => {
   const { _id } = req.body
-  console.log(_id)
   Post.findOne({ _id: _id }, function (err, result) {
     if (result) {
       console.log(result)
@@ -62,8 +61,25 @@ export const FindOne = async (req: Request, res: Response) => {
       let r = [{ title: result.title, time: goDay, username: result.username, words: result.words, wordSize: result.wordSize, _id: result._id }];
       return Send(res, 200, "성공", true, r)
     } else {
-      return Send(res, 200, "실패", false, '실패')
+      return Send(res, 500, "실패", false, '실패')
     }
 
+  })
+}
+export const Delete = async (req: Request, res: Response) => {
+  const { password, _id } = req.body
+  console.log(req.body)
+  if (!password) {
+    return Send(res, 200, "빈칸을 모두 입력해 주세요.", false)
+  }
+  Post.findOne({ _id: _id }, function (err, result) {
+    bcrypt.compare(password, result.password, function (err, value) {
+      if (value == true) {
+        Post.deleteOne({ _id: result._id }, function (err) { });
+        return Send(res, 200, "성공", true, '성공')
+      } else {
+        return Send(res, 200, "패스워드 불일치", false, '패스워드 불일치')
+      }
+    })
   })
 }
