@@ -36,10 +36,6 @@ export const Create = async (req: Request, res: Response) => {
       .catch(err => Send(res, 500, "DB 저장을 실패했습니다.", false))
   })
 }
-export const Init = async (req: Request, res: Response) => {
-  Post.deleteMany({}, function (err) { })
-}
-
 export const FindAll = async (req: Request, res: Response) => {
   Post.find({}, function (err, result) {
     let r = [];
