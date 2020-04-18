@@ -13,7 +13,10 @@ export const Create = async (req: Request, res: Response) => {
     return Send(res, 200, "빈칸을 모두 입력해 주세요.", false)
   }
   if (words.length != wordSize) {
-    return Send(res, 200, "단어 칸을 모두 입력해주세요", false)
+    return Send(res, 200, "단어 칸을 모두 입력해주세요.", false)
+  }
+  if (!(2 <= title.length && title.length <= 22)) {
+    return Send(res, 200, "제목은 2글자에서 22글자 사이입니다.", false)
   }
 
   bcrypt.hash(password, null, null, async function (err, hash) {
